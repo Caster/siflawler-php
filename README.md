@@ -101,6 +101,7 @@ The `verbose` and `warnings` options can be used to toggle siflawler output.
 
 ### License
 siflawler - a simple, flexible crawler, written in PHP.
+
 Copyright (C) 2015  Thom Castermans
 
 This program is free software: you can redistribute it and/or modify
