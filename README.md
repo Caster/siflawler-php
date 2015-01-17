@@ -1,5 +1,4 @@
-siflawler-php
--------------
+# siflawler-php
 A simple, flexible crawler, written in PHP. Do you want data from a website?
 This project may be just the tool you need. Do you want to crawl multiple pages,
 retrieving data from all those pages? We all love pagination, right? This tool
@@ -9,23 +8,23 @@ configuration file to let siflawler know what to look for and where and you are
 good to go.
 
 
-### Usage
+## Usage
 There are a couple of steps to go through.
 
   1.  Download or clone siflawler.
-      
+
   1.  Create your own PHP file, based on the test files in the repository. Really,
       you only need to include the `siflawler.php` class loader, that will be all.
-      
+
   1.  Write a JSON configuration file *(TODO: I want to make it possible to pass a
       string or object with configuration)* and pass its filename to the `Crawler`
       constructor as follows:
-      
+
       ```php
       $crawler = new \siflawler\Crawler('/path/to/config.json');
       ```
   1.  Start crawling.
-      
+
       ```php
       $data = $crawler->crawl();
       ```
@@ -39,12 +38,12 @@ $ php -f your-file.php
 ```
 
 
-### But what do I configure?
+## But what do I configure?
 Configuration? JSON? What? How? Like this. *TODO: I want to support CSS selectors as
 queries, possibly extended somehow to retrieve text or attribute values.*
 
 
-#### Mandatory options
+### Mandatory options
 The following options are mandatory. siflawler will throw an exception if you forget
 to pass one of these to it. It simply needs to know what to do.
 
@@ -71,7 +70,7 @@ put in that key in the resulting `stdClass` object.
 If you want to crawl multiple pages, use the `next` option (see next section).
 
 
-#### Optional options
+### Optional options
 You can use the following optional options, which are all self-explanatory really.
 The below values are the default values, you only need to include options if you
 want to use a different value or want to be explicit.
@@ -99,7 +98,30 @@ A value of 0 means that there will be no timeout.
 The `verbose` and `warnings` options can be used to toggle siflawler output.
 
 
-### License
+## Running tests
+This project includes [phpunit](https://phpunit.de/) as a
+[submodule](http://git-scm.com/book/en/v2/Git-Tools-Submodules). This means that
+if you want to run tests, you will need to initialise and update that submodule
+as follows:
+
+```
+$ cd /path/to/siflawler-php/
+$ git submodule update --init --remote
+Submodule 'phpunit' (git@github.com:sebastianbergmann/phpunit.git) registered for path 'lib/phpunit'
+Submodule path 'lib/phpunit': checked out 'e90575c2bb86290d57a262862dab1da125431576'
+```
+
+This should check out the latest commit in the stable branch, currently `4.4`.
+
+If you then want to run tests, you can do so as follows:
+
+```
+$ cd /path/to/siflawler-php/tests/
+$ ../lib/phpunit/phpunit
+```
+
+
+## License
 siflawler - a simple, flexible crawler, written in PHP.
 
 Copyright (C) 2015  Thom Castermans

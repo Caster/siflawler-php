@@ -1,0 +1,11 @@
+{
+    "verbose": false,
+    "warnings": false,
+    "start": "https://github.com/Caster/siflawler-php",
+    "find": "//ol[@class=\"repository-lang-stats-numbers\"]/li",
+    "get": {
+        "language": "a/span[@class=\"lang\"]/text()",
+        "percent": "a/span[@class=\"percent\"]/text()"
+    },
+    "next": null
+}

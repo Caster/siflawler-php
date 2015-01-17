@@ -1,0 +1,7 @@
+<phpunit bootstrap="../lib/siflawler.php">
+  <testsuites>
+    <testsuite name="siflawler">
+      <directory>.</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
