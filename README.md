@@ -101,9 +101,9 @@ want to use a different value or want to be explicit.
 The `max_requests` option can be used to limit the number of pages siflawler will
 request in total. A value of 0 or less means that there is no limit.
 
-The `next` option can be used to find one (*TODO: or more*) URLs to crawl next. If
-this is `null`, then no next page will be crawled, but you can specify an XPath
-query to find one or more locations to go next.
+The `next` option can be used to find one or more URLs to crawl next. If this is
+`null`, then no next page will be crawled, but you can specify an XPath query to
+find one or more locations to go next.
 
 The `timeout` option can be used to specify a timeout in seconds for each request.
 A value of 0 means that there will be no timeout.
