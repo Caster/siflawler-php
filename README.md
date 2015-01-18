@@ -1,11 +1,11 @@
 # siflawler-php
-A simple, flexible crawler, written in PHP. Do you want data from a website? 
-This project may be just the tool you need. Do you want to crawl multiple pages, 
-retrieving data from all those pages? We all love pagination, right? This tool 
-can handle it. Do you hate writing code that traverses DOM trees in PHP, or do 
-you not know how to do that? No problem. You only need to write a JSON 
-configuration file (or pass that information as a `\stdClass` object or 
-associative array) to let siflawler know what to look for and where and you are 
+A simple, flexible crawler, written in PHP. Do you want data from a website?
+This project may be just the tool you need. Do you want to crawl multiple pages,
+retrieving data from all those pages? We all love pagination, right? This tool
+can handle it. Do you hate writing code that traverses DOM trees in PHP, or do
+you not know how to do that? No problem. You only need to write a JSON
+configuration file (or pass that information as a `\stdClass` object or
+associative array) to let siflawler know what to look for and where and you are
 good to go.
 
 
