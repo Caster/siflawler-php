@@ -14,57 +14,78 @@ class Parser {
      * Parse a given HTML string and find data and next page(s) to parse.
      *
      * @param $options Options object. Used to read data and next selectors.
-     * @param $page Data to parse as a string.
+     * @param $page_url URL that page was retrieved from. Used for relative links.
+     * @param $page Data to parse as a string. Can be an array of strings too.
      * @param $data Array of data found so far. Will be extended with data found
-     *            on this page, if any is found.
+     *            on this page (or these pages), if any is found.
      * @return A string or array of strings of URLs to visit next.
      */
-    public static function find($options, $page, &$data) {
-        // TODO: support multiple pages if $page is an array
-        // parse the page
-        list($doc, $xpath) = self::load_html($page);
+    public static function find($options, $page_url, $page, &$data) {
+        $docs = array();
+        $xpaths = array();
+        $pages = (is_array($page) ? $page : array($page));
+        $page_count = count($pages);
+
+        // parse the page(s)
+        for ($i = 0; $i < $page_count; $i++) {
+            list($doc, $xpath) = self::load_html($pages[$i]);
+            $docs[] = $doc;
+            $xpaths[] = $xpath;
+        }
 
         // search for data
         $data_keys = $options->get('get');
-        $data_nodes = $xpath->query($options->get('find'));
-        foreach ($data_nodes as $data_node) {
-            $data_point = new \stdClass();
-            foreach ($data_keys as $key => $query) {
-                $result = $xpath->query($query, $data_node);
-                if ($result !== false && $result->length > 0) {
-                    $data_point->{$key} = self::get_node_value($result->item(0));
+        $find_query = $options->get('find');
+        for ($i = 0; $i < $page_count; $i++) {
+            $data_nodes = $xpaths[$i]->query($find_query);
+            foreach ($data_nodes as $data_node) {
+                $data_point = new \stdClass();
+                foreach ($data_keys as $key => $query) {
+                    $result = $xpaths[$i]->query($query, $data_node);
+                    if ($result !== false && $result->length > 0) {
+                        $data_point->{$key} = self::get_node_value($result->item(0));
+                    }
                 }
+                $data[] = $data_point;
+                unset($data_point);
             }
-            $data[] = $data_point;
-            unset($data_point);
         }
 
         // find the next element(s)
+        $next_urls = array();
         $next_query = $options->get('next');
+        $echo_warnings = $options->get('warnings');
         if ($next_query !== null) {
-            $next_nodes = $xpath->query($next_query);
-            if ($next_nodes !== false && $next_nodes->length > 0) {
-                $next = array();
-                foreach ($next_nodes as $next_node) {
-                    $value = self::get_node_value($next_node);
-                    // we only handle values that could be URLs, that is, strings
-                    // otherwise we ignore the value
-                    if (is_string($value)) {
-                        $next[] = Fetcher::check_url($options, $value);
+            for ($i = 0; $i < $page_count; $i++) {
+                $next_nodes = $xpaths[$i]->query($next_query);
+                if ($next_nodes !== false && $next_nodes->length > 0) {
+                    $next = array();
+                    foreach ($next_nodes as $next_node) {
+                        $value = self::get_node_value($next_node);
+                        // we only handle values that could be URLs, that is,
+                        // strings... otherwise we ignore the value
+                        if (is_string($value)) {
+                            $next[] = Fetcher::check_url($page_url, $value);
+                        } else if ($echo_warnings) {
+                            printf('Ignored a "next" element that did not '
+                                 .'result in a text value.%s', PHP_EOL);
+                        }
+                    }
+                    if (count($next) !== 0) {
+                        // push all elements in the $next array on $next_urls
+                        // do it this way because unshifting a reference is not
+                        // possible anymore (counts as call-time pass-by-ref)
+                        array_unshift($next, null);
+                        $next[0] = &$next_urls;
+                        call_user_func_array('array_push', $next);
                     }
                 }
-                if (count($next) === 0) {
-                    return null;
-                }
-                if (count($next) === 1) {
-                    return $next[0];
-                }
-                return $next;
             }
         }
 
-        // we did not find the next element, so return that we should stop
-        return null;
+        // return what we found
+        return (count($next_urls) === 0 ? null :
+                (count($next_urls) === 1 ? $next_urls[0] : $next_urls));
     }
 
     /**

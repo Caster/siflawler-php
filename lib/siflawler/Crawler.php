@@ -73,7 +73,7 @@ class Crawler {
                 break;
             }
             // parse page and find data user wants and the next page(s) to crawl
-            $next = Parser::find($this->_options, $page, $data);
+            $next = Parser::find($this->_options, $next, $page, $data);
         } while ($next !== null);
 
         // return found data

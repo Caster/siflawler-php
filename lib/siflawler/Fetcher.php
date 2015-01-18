@@ -11,25 +11,34 @@ class Fetcher {
 
     /**
      * Returns the given URL if it is valid. If it appears to be an absolute
-     * URL then it is prefixed with the 'start' option URL to make it a full
-     * URL that can be used by cURL.
+     * URL then it is prefixed with the base URL of the page URL to make it a
+     * full URL that can be used by cURL.
      * If it does not appear to be an absolute URL, @c null is returned.
+     *
+     * @param $page_url URL where page was retrieved from. Used to make links
+     *            absolute if they are not.
+     * @param $url A URL that was found on the page retrieved through above URL.
      */
-    public static function check_url($options, $url) {
+    public static function check_url($page_url, $url) {
         $url_info = parse_url($url);
         if (isset($url_info['scheme']) && isset($url_info['host'])) {
             return $url;
         }
 
         // is it not an absolute URL?
-        if (strlen($url) > 0 && $url[0] !== '/') {
+        if (strlen($url) > 0 && $url[0] !== '/' && $url[0] !== '#') {
             return null;
         }
 
-        // try to parse the 'start' url
-        $url_info = parse_url($options->get('start'));
+        // is it a hash?
+        if ($url[0] === '#') {
+            return $page_url . $url;
+        }
+
+        // try to parse the page URL
+        $url_info = parse_url($page_url);
         if (isset($url_info['host'])) {
-            // try to use the same scheme as the 'start' url
+            // try to use the same scheme as the page URL
             $scheme = 'http';
             if (isset($url_info['scheme'])) {
                 $scheme = $url_info['scheme'];
@@ -37,7 +46,7 @@ class Fetcher {
             return sprintf('%s://%s%s', $scheme, $url_info['host'], $url);
         }
 
-        // well, the 'start' url does not seem to be a valid URL...
+        // well, the page URL does not seem to be a valid URL...
         return null;
     }
 

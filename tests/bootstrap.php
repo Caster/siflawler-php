@@ -2,7 +2,7 @@
 
 namespace siflawlerTest;
 
-require_once('../lib/siflawler.php');
+require_once(__DIR__ . '/../lib/siflawler.php');
 
 class siflawlerTest {
 
