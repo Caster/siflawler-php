@@ -22,12 +22,7 @@ class Parser {
     public static function find($options, $page, &$data) {
         // TODO: support multiple pages if $page is an array
         // parse the page
-        $prev_value = libxml_use_internal_errors(true);
-        $doc = \DOMDocument::loadHTML($page, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG
-            | LIBXML_NOERROR | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_PARSEHUGE);
-        libxml_clear_errors();
-        libxml_use_internal_errors($prev_value);
-        $xpath = new \DOMXPath($doc);
+        list($doc, $xpath) = self::load_html($page);
 
         // search for data
         $data_keys = $options->get('get');
@@ -77,7 +72,7 @@ class Parser {
      * value of a \DOMAttr node, et cetera. If the given node is "unknown" in
      * that regard, then the node itself is returned.
      */
-    private static function get_node_value($node) {
+    public static function get_node_value($node) {
         switch (get_class($node)) {
             case 'DOMAttr':
                 return $node->value;
@@ -86,6 +81,22 @@ class Parser {
             default:
                 return $node;
         }
+    }
+
+    /**
+     * Load an HTML string into a \DOMDocument and create a \DOMXPath on it.
+     *
+     * @param $page HTML string to load.
+     * @return An array with a \DOMDocument and \DOMXPath object.
+     */
+    public static function load_html($page) {
+        $prev_value = libxml_use_internal_errors(true);
+        $doc = \DOMDocument::loadHTML($page, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG
+            | LIBXML_NOERROR | LIBXML_NONET | LIBXML_NOWARNING | LIBXML_PARSEHUGE);
+        libxml_clear_errors();
+        libxml_use_internal_errors($prev_value);
+        $xpath = new \DOMXPath($doc);
+        return array($doc, $xpath);
     }
 
 }
