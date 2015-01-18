@@ -8,6 +8,14 @@ configuration file to let siflawler know what to look for and where and you are
 good to go.
 
 
+  1.  [Usage](#usage)
+  2.  [But what do I configure?](#but-what-do-i-configure)
+      1.  [Mandatory options](#mandatory-options)
+      2.  [Optional options](#optional-options)
+  3.  [Running tests](#running-tests)
+  4.  [License](#license)
+
+
 ## Usage
 There are a couple of steps to go through.
 
