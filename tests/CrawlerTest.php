@@ -2,6 +2,8 @@
 
 namespace siflawlerTest;
 
+use \siflawler\Crawler;
+
 class CrawlerTest extends \PHPUnit_Framework_TestCase {
 
     public static function setUpBeforeClass() {
@@ -10,29 +12,29 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase {
 
     public function testConstruct() {
         try {
-            $crawler = new \siflawler\Crawler(TestCache::$config_file);
+            $crawler = new Crawler(TestCache::$config_file);
         } catch (Exception $e) {
             $this->fail('\\siflawler\\Crawler threw an exception ("' . $e->getMessage() . '").');
         }
     }
 
     public function testCrawlFile() {
-        $crawler = new \siflawler\Crawler(TestCache::$config_file);
+        $crawler = new Crawler(TestCache::$config_file);
         $this->runAndVerifyCrawler($crawler);
     }
 
     public function testCrawlString() {
-        $crawler = new \siflawler\Crawler(TestCache::$config_string);
+        $crawler = new Crawler(TestCache::$config_string);
         $this->runAndVerifyCrawler($crawler);
     }
 
     public function testCrawlObject() {
-        $crawler = new \siflawler\Crawler(TestCache::$config_object);
+        $crawler = new Crawler(TestCache::$config_object);
         $this->runAndVerifyCrawler($crawler);
     }
 
     public function testCrawlArray() {
-        $crawler = new \siflawler\Crawler(TestCache::$config_array);
+        $crawler = new Crawler(TestCache::$config_array);
         $this->runAndVerifyCrawler($crawler);
     }
 
