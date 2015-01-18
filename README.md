@@ -24,13 +24,17 @@ There are a couple of steps to go through.
   1.  Create your own PHP file, based on the test files in the repository. Really,
       you only need to include the `siflawler.php` class loader, that will be all.
 
-  1.  Write a JSON configuration file *(TODO: I want to make it possible to pass a
-      string or object with configuration)* and pass its filename to the `Crawler`
+  1.  Write a JSON configuration file and pass its filename to the `Crawler`
       constructor as follows:
 
       ```php
       $crawler = new \siflawler\Crawler('/path/to/config.json');
       ```
+
+      Alternatively, you can pass the JSON as a string, you can pass a `\stdClass`
+      object or you can even pass an associative array. Whatever you prefer,
+      siflawler will (try to) understand it.
+
   1.  Start crawling.
 
       ```php

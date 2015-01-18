@@ -21,24 +21,27 @@ class Options {
     private $_options;
 
     /**
-     * Construct a new \siflawler\Options that reads settings from the given
-     * file, in JSON format.
+     * Construct a new \siflawler\Config\Options that reads options from the
+     * given parameter. There are multiple supported formats.
      *
-     * @param $configFile Path to a file with configuration in JSON format.
+     * @param $options Some form to read options from. Supported formats are:
+     *            - Path to a file with configuration in JSON format.
+     *            - String with JSON object with configuration.
+     *            - A \stdClass object with configuration.
+     *            - An associative array with configuration.
      */
-    public function __construct($configFile) {
-        // check if we can read the file
-        if (!is_file($configFile) || !is_readable($configFile)) {
-            throw new ConfigException('Cannot read file "' . $configFile . '". '
-                . 'File does not exist or is not readable.');
-        }
-
-        // load settings from the file
-        $this->_options = json_decode(file_get_contents($configFile));
-        if ($this->_options === null && json_last_error() !== JSON_ERROR_NONE) {
-            throw new ConfigException('Could not parse configuration file "'
-                . $configFile . '", please make sure it is valid JSON (the way'
-                . ' PHP understands JSON, that is).');
+    public function __construct($options) {
+        // basically check which type of option is passed
+        if (is_string($options)) {
+            if (is_file($options)) {
+                $this->construct_from_file($options);
+            } else {
+                $this->construct_from_string($options);
+            }
+        } elseif (is_object($options)) {
+            $this->_options = $options;
+        } elseif (is_array($options)) {
+            $this->construct_from_array($options);
         }
 
         // check mandatory options
@@ -88,6 +91,61 @@ class Options {
      */
     public function set($key, $value) {
         $this->_options->{$key} = $value;
+    }
+
+
+    /**
+     * Load options from an associative array.
+     */
+    private function construct_from_array($array) {
+        $this->_options = $this->array_to_object($array);
+    }
+
+    /**
+     * Load options from a file, or try to at least.
+     *
+     * @param $file Path to a file to read.
+     */
+    private function construct_from_file($file) {
+        // check if we can read the file
+        if (!is_file($file) || !is_readable($file)) {
+            throw new ConfigException('Cannot read file "' . $file . '". '
+                . 'File does not exist or is not readable.');
+        }
+
+        // load settings from the file
+        $this->construct_from_string(file_get_contents($file));
+    }
+
+    /**
+     * Load options from a JSON-encoded object string.
+     *
+     * @param $json JSON as a string to decode.
+     */
+    private function construct_from_string($json) {
+        $this->_options = json_decode($json);
+        if ($this->_options === null && json_last_error() !== JSON_ERROR_NONE) {
+            throw new ConfigException('Could not parse configuration options,'
+                . ' please make sure it is valid JSON (the way'
+                . ' PHP understands JSON, that is).');
+        }
+    }
+
+    /**
+     * Convert an associative array to an object, recursively.
+     *
+     * @param $array Array to convert.
+     */
+    private function array_to_object($array) {
+        $result = new \stdClass();
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $result->{$k} = $this->array_to_object($v);
+            } else {
+                $result->{$k} = $v;
+            }
+        }
+        return $result;
     }
 
 }

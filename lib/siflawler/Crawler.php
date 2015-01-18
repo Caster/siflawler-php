@@ -19,13 +19,14 @@ class Crawler {
     private $_options;
 
     /**
-     * Construct a new \siflawler\Crawler that reads settings from the given
-     * file, in JSON format.
+     * Construct a new \siflawler\Crawler that reads the given options.
      *
-     * @param $configFile Path to a file with configuration in JSON format.
+     * @param $options A string, object or array with options. Refer to the
+     *            \siflawler\Config\Options#__construct documentation for more
+     *            details on what is allowed and supported.
      */
-    public function __construct($configFile) {
-        $this->_options = new Options($configFile);
+    public function __construct($options) {
+        $this->_options = new Options($options);
     }
 
     /**
