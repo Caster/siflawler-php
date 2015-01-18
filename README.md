@@ -113,6 +113,15 @@ Submodule path 'lib/phpunit': checked out 'e90575c2bb86290d57a262862dab1da125431
 
 This should check out the latest commit in the stable branch, currently `4.4`.
 
+To set up PHPUnit, you will need to execute a few more commands only once. This
+will also be output by PHPUnit if you run it without doing these steps.
+
+```
+$ cd /path/to/siflawler-php/lib/phpunit/
+$ wget http://getcomposer.org/composer.phar
+$ php composer.phar install
+```
+
 If you then want to run tests, you can do so as follows:
 
 ```
