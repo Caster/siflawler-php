@@ -15,6 +15,7 @@ class Parser {
      *
      * @param $options Options object. Used to read data and next selectors.
      * @param $page_url URL that page was retrieved from. Used for relative links.
+     *            Can be an array of the same length as @c $page too.
      * @param $page Data to parse as a string. Can be an array of strings too.
      * @param $data Array of data found so far. Will be extended with data found
      *            on this page (or these pages), if any is found.
@@ -23,6 +24,7 @@ class Parser {
     public static function find($options, $page_url, $page, &$data) {
         $docs = array();
         $xpaths = array();
+        $page_urls = (is_array($page_url) ? $page_url : array($page_url));
         $pages = (is_array($page) ? $page : array($page));
         $page_count = count($pages);
 
@@ -65,7 +67,7 @@ class Parser {
                         // we only handle values that could be URLs, that is,
                         // strings... otherwise we ignore the value
                         if (is_string($value)) {
-                            $next[] = Fetcher::check_url($page_url, $value);
+                            $next[] = Fetcher::check_url($page_urls[$i], $value);
                         } else if ($echo_warnings) {
                             printf('Ignored a "next" element that did not '
                                  .'result in a text value.%s', PHP_EOL);
