@@ -54,21 +54,21 @@ class Crawler {
                 // can we do that?
                 if ($requests_left < 0) {
                     if ($verbose) {
-                        printf("Reached request limit of %d requests.\n",
-                            $this->_options->get('max_requests'));
+                        printf('Reached request limit of %d requests.%s',
+                            $this->_options->get('max_requests'), PHP_EOL);
                     }
                     break;
                 }
             }
             // load the next page, let user know if wanted
             if ($verbose) {
-                printf("[%3d] Loading \"%s\"...\n", ++$count, $next);
+                printf('[%3d] Loading "%s"...%s', ++$count, $next, PHP_EOL);
             }
             try {
                 $page = Fetcher::load($this->_options, $next);
             } catch (NotFoundException $nfe) {
                 if ($this->_options->get('warnings')) {
-                    printf("%s\n", $nfe->getMessage());
+                    printf("%s%s", $nfe->getMessage(), PHP_EOL);
                 }
                 break;
             }
