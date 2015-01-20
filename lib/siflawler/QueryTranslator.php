@@ -48,7 +48,7 @@ class QueryTranslator {
         array_shift($idSplit);
         if (count($idSplit) > 0) {
             $xPath .= '[@id="';
-            $xPath .= implode('" or @id="', $idSplit);
+            $xPath .= implode('" and @id="', $idSplit);
             $xPath .= '"]';
         }
         // TODO: classes
