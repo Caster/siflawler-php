@@ -13,6 +13,7 @@ class TestCache {
     public static $config_string;
     public static $config_object;
     public static $config_array;
+    public static $config_file_rijdendetreinen;
 
     public static function init() {
         // try to be smart and save CPU cycles
@@ -20,8 +21,11 @@ class TestCache {
             return;
         }
 
-        // file to read configuration from
-        self::$config_file = __DIR__ . '/siflawler-php-github.json';
+        // files to read configuration from
+        self::$config_file = __DIR__
+            . '/siflawler-config/siflawler-php-github.json';
+        self::$config_file_rijdendetreinen = __DIR__
+            . '/siflawler-config/rijdendetreinen.json';
 
         // same configuration, as a string
         // note that we avoid file_get_contents because technically, that may do

@@ -1,0 +1,14 @@
+{
+    "max_requests": 10,
+    "verbose": false,
+    "warnings": false,
+    "start": "http://www.rijdendetreinen.nl/storingen/p550",
+    "find": "//ul/li",
+    "get": {
+        "station": "a/text()",
+        "reason": "em/text()",
+        "from": "descendant::time[1]/@datetime",
+        "to": "descendant::time[2]/@datetime"
+    },
+    "next": "(//a[@class=\"smallbutton active\"])[1]/following-sibling::a/@href"
+}
