@@ -39,11 +39,13 @@ class Parser {
         $data_keys = $options->get('get');
         $find_query = $options->get('find');
         for ($i = 0; $i < $page_count; $i++) {
-            $data_nodes = $xpaths[$i]->query($find_query);
+            $data_nodes = $xpaths[$i]->query(
+                QueryTranslator::translateQuery($find_query));
             foreach ($data_nodes as $data_node) {
                 $data_point = new \stdClass();
                 foreach ($data_keys as $key => $query) {
-                    $result = $xpaths[$i]->query($query, $data_node);
+                    $result = $xpaths[$i]->query(
+                        QueryTranslator::translateQuery($query), $data_node);
                     if ($result !== false && $result->length > 0) {
                         $data_point->{$key} = self::get_node_value($result->item(0));
                     }
@@ -59,7 +61,8 @@ class Parser {
         $echo_warnings = $options->get('warnings');
         if ($next_query !== null) {
             for ($i = 0; $i < $page_count; $i++) {
-                $next_nodes = $xpaths[$i]->query($next_query);
+                $next_nodes = $xpaths[$i]->query(
+                    QueryTranslator::translateQuery($next_query));
                 if ($next_nodes !== false && $next_nodes->length > 0) {
                     $next = array();
                     foreach ($next_nodes as $next_node) {

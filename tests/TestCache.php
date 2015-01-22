@@ -61,7 +61,7 @@ JSON;
             'verbose' => false,
             'warnings' => false,
             'start' => 'https://github.com/Caster/siflawler-php',
-            'find' => '//ol[@class="repository-lang-stats-numbers"]/li',
+            'find' => 'ol.repository-lang-stats-numbers > li',
             'get' => array(
                 'language' => 'a/span[@class="lang"]/text()',
                 'percent' => 'a/span[@class="percent"]/text()'
