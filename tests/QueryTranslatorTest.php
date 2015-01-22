@@ -38,6 +38,13 @@ class QueryTranslatorTest extends \PHPUnit_Framework_TestCase {
                 . "normalize-space(@class), ' '), ' .ID '))]",
 
             '#a > #b #c' => '//*[@id="a"]/*[@id="b"]/descendant::*[@id="c"]',
+
+            'p#someID$text()' => '//p[@id="someID"]/text()',
+
+            'p#someID$attr("ARIA-te_st0")' => '//p[@id="someID"]/@ARIA-te_st0',
+
+            'a.nav$attr("href")' => "//a[(contains(concat(' ', normalize-space(@class), ' '), "
+                . "' nav '))]/@href",
         );
 
         foreach ($tests as $input => $expected) {

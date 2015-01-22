@@ -27,6 +27,7 @@ class QueryTranslator {
     const PARSE_CHILD =       8; // parsing a child (> in selector)
     const PARSE_LITERAL =    16; // parsing an escaped character
     const PARSE_ADDITIONAL = 32; // parsing an additional query (comma)
+    const PARSE_XFUNC =      64; // parsing a CSS addition of siflawler
 
     /**
      * Translate a CSS selector to an XPath query.
@@ -143,6 +144,10 @@ class QueryTranslator {
                     $parse_stack[] = self::PARSE_ID;
                     $parse_stack_values[] = '';
                     break;
+                case '$':
+                    $parse_stack[] = self::PARSE_XFUNC;
+                    $parse_stack_values[] = '';
+                    break;
                 case '>':
                     if (end($parse_stack) === self::PARSE_DESCENDANT) {
                         $parse_stack[count($parse_stack) - 1] = self::PARSE_CHILD;
@@ -233,6 +238,16 @@ class QueryTranslator {
                     break;
                 case self::PARSE_ADDITIONAL:
                     $xpath .= ' | //';
+                    break;
+                case self::PARSE_XFUNC:
+                    $matches = null;
+                    if ($parse_stack_values[$i] === 'text()') {
+                        $xpath .= '/text()';
+                    } else if (preg_match('/attr\("([^\t\n\f \/>"\'=]+)"\)/',
+                            $parse_stack_values[$i], $matches) === 1) {
+                        // http://stackoverflow.com/a/926136/962603
+                        $xpath .= '/@' . $matches[1];
+                    }
                     break;
             }
         }
