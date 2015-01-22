@@ -29,6 +29,15 @@ class QueryTranslatorTest extends \PHPUnit_Framework_TestCase {
 
             '.some-class > div#soMe' => "//*[(contains(concat(' ', normalize-space("
                 . "@class), ' '), ' some-class '))]/div[@id=\"soMe\"]",
+
+            '#some\#ID' => '//*[@id="some#ID"]',
+
+            '#some\#\.ID' => '//*[@id="some#.ID"]',
+
+            '#some\#.\.ID' => "//*[@id=\"some#\" and (contains(concat(' ', "
+                . "normalize-space(@class), ' '), ' .ID '))]",
+
+            '#a > #b #c' => '//*[@id="a"]/*[@id="b"]/descendant::*[@id="c"]',
         );
 
         foreach ($tests as $input => $expected) {
