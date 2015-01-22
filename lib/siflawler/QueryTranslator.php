@@ -34,6 +34,86 @@ class QueryTranslator {
      * @param $css Selector to translate.
      */
     public static function cssToXPath($css) {
+        // possibly remove scheme from selector
+        if (substr($css, 0, 4) === 'css:') {
+            $css = substr($css, 4);
+        }
+
+        // build a parse tree
+        list($parse_stack, $parse_stack_values) = self::build_parse_tree($css);
+
+        // start building an XPath query and return that
+        return self::build_xpath_query($parse_stack, $parse_stack_values);
+    }
+
+    /**
+     * Return if the given query/selector is more likely to be a CSS query than
+     * an XPath query. This is determined using a heuristic. A query can start
+     * with 'css:' or 'xpath:', which is considered as well. If that scheme is
+     * present, then no heuristic is used, but the scheme is considered to be
+     * true (as in, we believe what it says itself).
+     *
+     * @param $query Query or selector to consider.
+     * @return A boolean indicating if @c $query is likely to be CSS (@c true)
+     *         or more likely to be an XPath query (@c false).
+     */
+    public static function isCss($query) {
+        if (substr($query, 0, 4) === 'css:') {
+            return true;
+        } else if (substr($query, 0, 6) === 'xpath:') {
+            return false;
+        }
+
+        $matches_css = null;
+        $matches_xpath = null;
+        preg_match('/[.#>]/', $query, $matches_css);
+        preg_match('/[\/:@=]/', $query, $matches_xpath);
+        return (count($matches_css) > count($matches_xpath));
+    }
+
+    /**
+     * Translate query to an XPath query. This function checks for the presence
+     * of a scheme (string starts with 'css:' or 'xpath:') and removes that in
+     * the result. Also, it translates CSS selectors to XPath queries.
+     *
+     * @param $query The query to consider.
+     * @return An XPath query that can be directly used for queries. Note that
+     *         this may be equal to @c $query, if that was a query already.
+     */
+    public static function translateQuery($query) {
+        // check for null
+        if ($query === null) {
+            return $query;
+        }
+
+        // is it CSS?
+        if (self::isCss($query)) {
+            return self::cssToXPath($query);
+        }
+        // we assume it is XPath now
+        if (substr($query, 0, 6) === 'xpath:') {
+            return substr($query, 6);
+        }
+        return $query;
+    }
+
+
+    /**
+     * Add an 'and' selector to a query, if needed.
+     */
+    private static function add_and($i, $parse_stack, &$xpath) {
+        if ($i > 0 && ($parse_stack[$i - 1] & (self::PARSE_CLASS |
+                                               self::PARSE_ID)) > 0) {
+            $xpath = substr($xpath, 0, -1) . ' and ';
+        } else {
+            $xpath .= '[';
+        }
+    }
+
+    /**
+     * Build a parse tree, given a CSS selector.
+     */
+    private static function build_parse_tree($css) {
         $css = trim($css);
         $css_len = strlen($css);
         $parse_stack = array(self::PARSE_ELEMENT);
@@ -107,7 +187,15 @@ class QueryTranslator {
             array_shift($parse_stack_values);
         }
 
-        // start building an XPath query
+        // return tree
+        return array($parse_stack, $parse_stack_values);
+    }
+
+    /**
+     * Given a parse tree as returned by \siflawler\QueryTranslator#build_parse_tree
+     * (that is, both the tree and the values), return a corresponding XPath query.
+     */
+    private function build_xpath_query($parse_stack, $parse_stack_values) {
         $xpath = '//';
         for ($i = 0; $i < count($parse_stack); $i++) {
             // if a new 'subquery' starts, we possible need to add a *
@@ -148,21 +236,7 @@ class QueryTranslator {
                     break;
             }
         }
-
         return $xpath;
-    }
-
-
-    /**
-     * Add an 'and' selector to a query, if needed.
-     */
-    private static function add_and($i, $parse_stack, &$xpath) {
-        if ($i > 0 && ($parse_stack[$i - 1] & (self::PARSE_CLASS |
-                                               self::PARSE_ID)) > 0) {
-            $xpath = substr($xpath, 0, -1) . ' and ';
-        } else {
-            $xpath .= '[';
-        }
     }
 
 }
