@@ -52,20 +52,20 @@ $ php -f your-file.php
 
 
 ## But what do I configure?
-Configuration? JSON? What? How? Like this. *TODO: I want to support CSS selectors as
-queries, possibly extended somehow to retrieve text or attribute values.*
+Configuration? JSON? What? How? Like this.
 
 
 ### Mandatory options
 The following options are mandatory. siflawler will throw an exception if you forget
-to pass one of these to it. It simply needs to know what to do.
+to pass one of these to it. It simply needs to know what to do. To see what you can
+pass for the selectors/queries, refer to [Querying](#querying).
 
 ```json
 {
     "start": "some url you want to start crawling at",
-    "find": "some XPath query to select interesting elements",
+    "find": "some CSS selector or XPath query to select interesting elements",
     "get": {
-        "key-1": "an XPath query to select some value within a found element",
+        "key-1": "a CSS selector or an XPath query to select some value within a found element",
         "key-2": "another XPath query, et cetera"
     }
 }
@@ -109,6 +109,27 @@ The `timeout` option can be used to specify a timeout in seconds for each reques
 A value of 0 means that there will be no timeout.
 
 The `verbose` and `warnings` options can be used to toggle siflawler output.
+
+
+### Querying
+Everywhere you can specify a query to find elements or attributes of elements,
+you can do two things: either specify an XPath query, or specify a CSS selector.
+CSS can normally only select nodes, but siflawler can understand some additional
+syntax that will allow you to select attribute values. Examples are:
+
+```css
+a.nav$attr("href")
+p#some-id$text()
+```
+
+Internally, siflawler will translate CSS selectors to XPath queries. If you want
+to be sure that this cannot go wrong, you should use XPath, but siflawler's CSS
+support is pretty good and can always be improved if you create an issue :)
+
+To distinguish between CSS and XPath, siflawler uses a heuristic. If you want to
+be sure that this does not go wrong, you can specify a query as
+`css:[your CSS selector]` or `xpath:[your XPath query]`, to let siflawler know
+precisely what the query language is you use.
 
 
 ## Running tests
