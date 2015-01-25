@@ -10,11 +10,13 @@ good to go.
 
 
   1.  [Usage](#usage)
-  2.  [But what do I configure?](#but-what-do-i-configure)
+  1.  [But what do I configure?](#but-what-do-i-configure)
       1.  [Mandatory options](#mandatory-options)
-      2.  [Optional options](#optional-options)
-  3.  [Running tests](#running-tests)
-  4.  [License](#license)
+      1.  [Optional options](#optional-options)
+      1.  [Querying](#querying)
+  1.  [Running tests](#running-tests)
+  1.  [Contributing](#contributing)
+  1.  [License](#license)
 
 
 ## Usage
@@ -162,6 +164,13 @@ If you then want to run tests, you can do so as follows:
 $ cd /path/to/siflawler-php/tests/
 $ ../lib/phpunit/phpunit
 ```
+
+
+## Contributing
+If you miss something in siflawler, found a problem or if you have something
+really cool to add to it, feel free to open an
+[issue](https://github.com/Caster/siflawler-php/issues) or pull request on
+GitHub. I will try to respond as quickly as possible.
 
 
 ## License
