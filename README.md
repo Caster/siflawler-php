@@ -74,7 +74,8 @@ pass for the selectors/queries, refer to [Querying](#querying).
 ```
 
 The `start` option is simply the URL siflawler will look (first) for an HTML page to
-crawl and get data from.
+crawl and get data from. This may also be an absolute path to some file on your
+local disk. It can even be an array of URLs, paths, or a mix of those two.
 
 The `find` option can be used to specify how siflawler should locate interesting
 elements on a page when it has been retrieved. For each interesting element, an

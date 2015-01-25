@@ -55,52 +55,32 @@ class Fetcher {
      *
      * @param $options Options object. Used to read timeout.
      * @param $url URL to load a document from. Can be an array of URLs too.
+     *            Each URL can also be an absolute path pointing to a local file.
      * @return Data read from given URL. Can be an array of data if an array of
      *         URLs was passed in @c $url.
      * @throw NotFoundException If a URL returned a HTTP 404 code.
      */
     public static function load($options, $url) {
-        $curl_handles = array();
-        $url_count = (is_array($url) ? count($url) : 1);
-        $multi = ($url_count > 1);
-        $mh = ($multi ? curl_multi_init() : null);
-
-        // initialise cURL handle(s)
-        for ($i = 0; $i < $url_count; $i++) {
-            $ch = curl_init();
-            self::set_curl_options($options, $ch, ($multi ? $url[$i] : $url));
-            $curl_handles[] = $ch;
-            if ($multi) {
-                curl_multi_add_handle($mh, $ch);
+        // find remote and local URL(s)
+        $local = array();
+        $remote = array();
+        $paths = (is_array($url) ? $url : array($url));
+        foreach ($paths as $path) {
+            $path_info = parse_url($path);
+            if (isset($path_info['scheme']) && isset($path_info['host'])) {
+                $remote[] = $path;
+            } else {
+                $local[] = $path;
             }
         }
 
-        // execute cURL handle(s) and check data
-        if ($multi) {
-            // execute connections in parallel
-            $active = 0;
-            do {
-                curl_multi_exec($mh, $active);
-                curl_multi_select($mh);
-            } while ($active > 0);
-            // check HTTP codes and retrieve data
-            $data = array();
-            for ($i = 0; $i < $url_count; $i++) {
-                self::check_curl_http_code($curl_handles[$i], $url[$i]);
-                $data[] = curl_multi_getcontent($curl_handles[$i]);
-                // remove handle from multi handle and close it
-                curl_multi_remove_handle($mh, $curl_handles[$i]);
-                curl_close($curl_handles[$i]);
-            }
-            // close multi handle
-            curl_multi_close($mh);
-        } else {
-            $data = curl_exec($curl_handles[0]);
-            self::check_curl_http_code($curl_handles[0], $url);
-            curl_close($curl_handles[0]);
+        // retrieve data both locally and remotely
+        $data = self::load_local($local);
+        if (count($remote) > 0) {
+            $data = array_merge($data, self::load_remote($options, $remote));
         }
 
-        // return data
+        // return found data
         return $data;
     }
 
@@ -121,6 +101,78 @@ class Fetcher {
             throw new NotFoundException('Could not load "' . $url . '", got '
                 . 'no response. Is the URL valid?');
         }
+    }
+
+    /**
+     * Load the content of a list of paths.
+     *
+     * @param $paths An array of paths.
+     * @return File contents of the given paths, in an array.
+     * @throw NotFoundException If a path was invalid.
+     */
+    private static function load_local($paths) {
+        $data = array();
+        for ($i = 0; $i < count($paths); $i++) {
+            if (!is_file($paths[$i]) || !is_readable($paths[$i])) {
+                throw new NotFoundException('Could not load "' . $paths[$i]
+                    . '", file does not exist or is not readable.');
+            }
+            $data[] = file_get_contents($paths[$i]);
+        }
+        return $data;
+    }
+
+    /**
+     * Load a document from a URL.
+     *
+     * @param $options Options object. Used to read timeout.
+     * @param $urls An array of URLs to load documents from.
+     * @return Data read from given URLs, as an array.
+     * @throw NotFoundException If a URL returned a HTTP 404 code.
+     */
+    private static function load_remote($options, $urls) {
+        $curl_handles = array();
+        $url_count = count($urls);
+        $multi = ($url_count > 1);
+        $mh = ($multi ? curl_multi_init() : null);
+
+        // initialise cURL handle(s)
+        for ($i = 0; $i < $url_count; $i++) {
+            $ch = curl_init();
+            self::set_curl_options($options, $ch, $urls[$i]);
+            $curl_handles[] = $ch;
+            if ($multi) {
+                curl_multi_add_handle($mh, $ch);
+            }
+        }
+
+        // execute cURL handle(s) and check data
+        if ($multi) {
+            // execute connections in parallel
+            $active = 0;
+            do {
+                curl_multi_exec($mh, $active);
+                curl_multi_select($mh);
+            } while ($active > 0);
+            // check HTTP codes and retrieve data
+            $data = array();
+            for ($i = 0; $i < $url_count; $i++) {
+                self::check_curl_http_code($curl_handles[$i], $urls[$i]);
+                $data[] = curl_multi_getcontent($curl_handles[$i]);
+                // remove handle from multi handle and close it
+                curl_multi_remove_handle($mh, $curl_handles[$i]);
+                curl_close($curl_handles[$i]);
+            }
+            // close multi handle
+            curl_multi_close($mh);
+        } else {
+            $data = array(curl_exec($curl_handles[0]));
+            self::check_curl_http_code($curl_handles[0], $urls[0]);
+            curl_close($curl_handles[0]);
+        }
+
+        // return data
+        return $data;
     }
 
     /**

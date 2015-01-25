@@ -18,13 +18,37 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
     public function testLoad() {
         // load data
         $data = Fetcher::load(self::$options, 'https://github.com/Caster/siflawler-php');
+        $this->assertInternalType('array', $data);
+        $this->assertEquals(1, count($data));
+        $data = $data[0];
         $this->assertInternalType('string', $data);
         // parse and check data
-        list($doc, $xpath) = Parser::load_html($data);
-        $elements = $xpath->query('//a[@class="js-current-repository"]/text()');
-        $this->assertEquals($elements->length, 1);
-        $repoName = Parser::get_node_value($elements->item(0));
-        $this->assertEquals($repoName, 'siflawler-php');
+        $this->checkSiflawlerPage($data);
+    }
+
+    public function testLoadLocal() {
+        // load data
+        $data = Fetcher::load(self::$options, __DIR__ . '/siflawler-config/github-siflawler-php.html');
+        $this->assertInternalType('array', $data);
+        $this->assertEquals(1, count($data));
+        $data = $data[0];
+        $this->assertInternalType('string', $data);
+        // parse and check data
+        $this->checkSiflawlerPage($data);
+    }
+
+    public function testLoadMix() {
+        // load data
+        $data = Fetcher::load(self::$options, array(
+            'https://github.com/Caster/siflawler-php',
+            __DIR__ . '/siflawler-config/github-siflawler-php.html'));
+        $this->assertInternalType('array', $data);
+        $this->assertEquals(2, count($data));
+        foreach ($data as $page) {
+            $this->assertInternalType('string', $page);
+            // parse and check data
+            $this->checkSiflawlerPage($page);
+        }
     }
 
     public function testLoadMulti() {
@@ -58,4 +82,16 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
         $repoName = Parser::get_node_value($elements->item(0));
         $this->assertEquals('Caster', $repoName);
     }
+
+    /**
+     * Check if the given page has certain elements.
+     */
+    private function checkSiflawlerPage($data) {
+        list($doc, $xpath) = Parser::load_html($data);
+        $elements = $xpath->query('//a[@class="js-current-repository"]/text()');
+        $this->assertEquals($elements->length, 1);
+        $repoName = Parser::get_node_value($elements->item(0));
+        $this->assertEquals($repoName, 'siflawler-php');
+    }
+
 }

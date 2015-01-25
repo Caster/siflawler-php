@@ -29,7 +29,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             self::$url . '#but-what-do-i-configure',
             self::$url . '#mandatory-options',
             self::$url . '#optional-options',
+            self::$url . '#querying',
             self::$url . '#running-tests',
+            self::$url . '#contributing',
             self::$url . '#license'
         );
         self::$expected_menu = array(
@@ -43,6 +45,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     public function testFind() {
         // load data
         $page = Fetcher::load(self::$options, self::$url);
+        $this->assertInternalType('array', $page);
+        $this->assertEquals(1, count($page));
+        $page = $page[0];
         $this->assertInternalType('string', $page);
 
         // find elements in the README table of contents
@@ -50,7 +55,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         $next = Parser::find(self::$options, self::$url, $page, $data);
         $this->assertInternalType('array', $data);
         $this->assertInternalType('array', $next);
-        $this->assertEquals(6, count($next));
+        $this->assertEquals(count(self::$expected_toc), count($next));
         for ($i = 0; $i < count(self::$expected_toc); $i++) {
             $this->assertEquals(self::$expected_toc[$i], $next[$i]);
         }
@@ -78,7 +83,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         $next = Parser::find(self::$options, $url, $page, $data);
         $this->assertInternalType('array', $data);
         $this->assertInternalType('array', $next);
-        $this->assertEquals(12, count($next));
+        $this->assertEquals(count(self::$expected_toc) * 2, count($next));
         $expected_next = array_merge(self::$expected_toc, self::$expected_toc);
         for ($i = 0; $i < count($expected_next); $i++) {
             $this->assertEquals($expected_next[$i], $next[$i]);
