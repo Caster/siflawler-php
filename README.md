@@ -58,9 +58,10 @@ Configuration? JSON? What? How? Like this.
 
 
 ### Mandatory options
-The following options are mandatory. siflawler will throw an exception if you forget
-to pass one of these to it. It simply needs to know what to do. To see what you can
-pass for the selectors/queries, refer to [Querying](#querying).
+The following options are mandatory and siflawler will throw an exception if you
+forget to pass one of these to it. It simply needs to know what to do. To see
+what you can pass for the selectors/queries, refer to the [Querying](#querying)
+section.
 
 ```json
 {
