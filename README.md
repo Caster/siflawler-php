@@ -169,8 +169,9 @@ $ ../lib/phpunit/phpunit
 ## Contributing
 If you miss something in siflawler, found a problem or if you have something
 really cool to add to it, feel free to open an
-[issue](https://github.com/Caster/siflawler-php/issues) or pull request on
-GitHub. I will try to respond as quickly as possible.
+[issue](https://github.com/Caster/siflawler-php/issues) or
+[pull request](https://github.com/Caster/siflawler-php/pulls) on GitHub. I will
+try to respond as quickly as possible.
 
 
 ## License
