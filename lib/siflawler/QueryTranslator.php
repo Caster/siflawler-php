@@ -69,7 +69,7 @@ class QueryTranslator {
         $matches_xpath = null;
         preg_match('/[.#>]/', $query, $matches_css);
         preg_match('/[\/:@=]/', $query, $matches_xpath);
-        return (count($matches_css) > count($matches_xpath));
+        return (count($matches_css) >= count($matches_xpath));
     }
 
     /**
