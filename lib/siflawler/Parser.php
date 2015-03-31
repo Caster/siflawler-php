@@ -39,8 +39,17 @@ class Parser {
         $data_keys = $options->get('get');
         $find_query = $options->get('find');
         for ($i = 0; $i < $page_count; $i++) {
-            $data_nodes = $xpaths[$i]->query(
+            $data_nodes = @$xpaths[$i]->query(
                 QueryTranslator::translateQuery($find_query));
+            if ($data_nodes === false) {
+                // invalid query!
+                if ($options->get('warnings')) {
+                    echo("[W] siflawler: malformed (translated) query for 'find'!\n");
+                    echo("    original query:   '${find_query}'\n");
+                    echo("    translated query: '" . QueryTranslator::translateQuery($find_query) . "'\n");
+                }
+                return null;
+            }
             foreach ($data_nodes as $data_node) {
                 $data_point = new \stdClass();
                 foreach ($data_keys as $key => $query) {
