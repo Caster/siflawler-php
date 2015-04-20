@@ -98,7 +98,7 @@ class Options {
      * Load options from an associative array.
      */
     private function construct_from_array($array) {
-        $this->_options = $this->array_to_object($array);
+        $this->_options = $this->array_to_object($array, false);
     }
 
     /**
@@ -136,10 +136,10 @@ class Options {
      *
      * @param $array Array to convert.
      */
-    private function array_to_object($array) {
+    private function array_to_object($array, $recursive = true) {
         $result = new \stdClass();
         foreach ($array as $k => $v) {
-            if (is_array($v)) {
+            if ($recursive && is_array($v)) {
                 $result->{$k} = $this->array_to_object($v);
             } else {
                 $result->{$k} = $v;
