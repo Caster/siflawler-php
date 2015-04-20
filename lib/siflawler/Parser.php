@@ -50,11 +50,19 @@ class Parser {
                 }
                 return null;
             }
+            if ($data_nodes->length === 0 && $options->get('warnings')) {
+                echo("[W] siflawler: no interesting nodes found on page '{$page_urls[$i]}'.\n");
+            }
             foreach ($data_nodes as $data_node) {
                 $data_point = new \stdClass();
                 foreach ($data_keys as $key => $query) {
                     $result = $xpaths[$i]->query(
                         QueryTranslator::translateQuery($query), $data_node);
+                    if ($result === false && $options->get('warnings')) {
+                        echo("[W] siflawler: malformed (translated) query for 'get['$key']'!\n");
+                        echo("    original query:   '${query}'\n");
+                        echo("    translated query: '" . QueryTranslator::translateQuery($query) . "'\n");
+                    }
                     if ($result !== false && $result->length > 0) {
                         $data_point->{$key} = self::get_node_value($result->item(0));
                     }
