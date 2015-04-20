@@ -63,8 +63,15 @@ class Parser {
                         echo("    original query:   '${query}'\n");
                         echo("    translated query: '" . QueryTranslator::translateQuery($query) . "'\n");
                     }
-                    if ($result !== false && $result->length > 0) {
-                        $data_point->{$key} = self::get_node_value($result->item(0));
+                    if ($result !== false) {
+                        if ($result->length === 1) {
+                            $data_point->{$key} = self::get_node_value($result->item(0));
+                        } else {
+                            $data_point->{$key} = array();
+                            for ($j = 0; $j < $result->length; $j++) {
+                                $data_point->{$key}[] = self::get_node_value($result->item($j));
+                            }
+                        }
                     }
                 }
                 $data[] = $data_point;
@@ -119,6 +126,8 @@ class Parser {
         switch (get_class($node)) {
             case 'DOMAttr':
                 return $node->value;
+            case 'DOMElement':
+                return '<' . $node->tagName . '>';
             case 'DOMText':
                 return $node->wholeText;
             default:
