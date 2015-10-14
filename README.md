@@ -9,6 +9,7 @@ associative array) to let siflawler know what to look for and where and you are
 good to go.
 
 
+  1.  [Dependencies](#dependencies)
   1.  [Usage](#usage)
   1.  [But what do I configure?](#but-what-do-i-configure)
       1.  [Mandatory options](#mandatory-options)
@@ -17,6 +18,9 @@ good to go.
   1.  [Running tests](#running-tests)
   1.  [Contributing](#contributing)
   1.  [License](#license)
+
+## Dependencies
+To be able to run siflawler, you will need to have the [PHP cURL module](http://php.net/manual/en/book.curl.php) installed. This is what siflawler uses to download pages from the website(s) you want to crawl. This does enable siflawler to download pages in parallel, amongst others. Please open an issue if you have a problem with this and would like to see if bare PHP `file_get_contents` support can be added.
 
 
 ## Usage
