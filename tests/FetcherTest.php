@@ -28,7 +28,7 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
 
     public function testLoadLocal() {
         // load data
-        $data = Fetcher::load(self::$options, __DIR__ . '/siflawler-config/github-siflawler-php.html');
+        $data = Fetcher::load(self::$options, TestCache::$local_file);
         $this->assertInternalType('array', $data);
         $this->assertEquals(1, count($data));
         $data = $data[0];
@@ -41,7 +41,7 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
         // load data
         $data = Fetcher::load(self::$options, array(
             'https://github.com/Caster/siflawler-php',
-            __DIR__ . '/siflawler-config/github-siflawler-php.html'));
+            TestCache::$local_file));
         $this->assertInternalType('array', $data);
         $this->assertEquals(2, count($data));
         foreach ($data as $page) {

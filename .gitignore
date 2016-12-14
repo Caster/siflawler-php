@@ -1,2 +1,5 @@
+# ignore temporary file for testing
+tests/siflawler-config/github-siflawler-php.html
+
 # ignore dependencies managed by Composer
 vendor/

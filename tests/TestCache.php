@@ -2,6 +2,8 @@
 
 namespace siflawlerTest;
 
+use \siflawler\NotFoundException;
+
 /**
  * This class contains some variables that can be used in multiple tests.
  */
@@ -14,6 +16,7 @@ class TestCache {
     public static $config_object;
     public static $config_array;
     public static $config_file_rijdendetreinen;
+    public static $local_file;
 
     public static function init() {
         // try to be smart and save CPU cycles
@@ -69,8 +72,27 @@ JSON;
             'next' => null
         );
 
+        // set file where local copy can be found/stored
+        self::$local_file = __DIR__ .
+            '/siflawler-config/github-siflawler-php.html';
+        if (!file_exists(self::$local_file)) {
+            self::download_local_copy();
+        }
+
         // done!
         self::$initialised = true;
+    }
+
+
+    private function download_local_copy() {
+        $f = @file_get_contents('https://github.com/Caster/siflawler-php');
+        if ($f !== false) {
+            if (@file_put_contents(self::$local_file, $f) !== false) {
+                return;
+            }
+        }
+        throw new NotFoundException('could not download or save ' .
+            'siflawler GitHub page for local testing');
     }
 
 }
