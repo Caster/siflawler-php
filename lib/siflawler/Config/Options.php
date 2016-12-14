@@ -47,15 +47,15 @@ class Options {
         // check mandatory options
         foreach (array('start', 'find', 'get') as $mandatory_option) {
             if (!property_exists($this->_options, $mandatory_option)) {
-                throw new ConfigException('Missing mandatory option "'
-                    . $mandatory_option . '" in the configuration file.');
+                throw new ConfigException('missing mandatory option "'
+                    . $mandatory_option . '" in the configuration');
             }
         }
 
         // load default options
         $this->_default_options = json_decode(file_get_contents(__DIR__ . '/default.json'));
         if ($this->_default_options === null && json_last_error() !== JSON_ERROR_NONE) {
-            throw new ConfigException('Could not read default option values.');
+            throw new ConfigException('could not read default option values');
         }
     }
 
@@ -80,7 +80,7 @@ class Options {
             return $this->_default_options->{$key};
         }
         // not found anywhere, throw exception
-        throw new ConfigException('Invalid key "' . $key . '".');
+        throw new ConfigException('invalid key "' . $key . '"');
     }
 
     /**
@@ -109,8 +109,8 @@ class Options {
     private function construct_from_file($file) {
         // check if we can read the file
         if (!is_file($file) || !is_readable($file)) {
-            throw new ConfigException('Cannot read file "' . $file . '". '
-                . 'File does not exist or is not readable.');
+            throw new ConfigException('cannot read file "' . $file . '", '
+                . 'file does not exist or is not readable');
         }
 
         // load settings from the file
@@ -125,9 +125,9 @@ class Options {
     private function construct_from_string($json) {
         $this->_options = json_decode($json);
         if ($this->_options === null && json_last_error() !== JSON_ERROR_NONE) {
-            throw new ConfigException('Could not parse configuration options,'
+            throw new ConfigException('could not parse configuration options,'
                 . ' please make sure it is valid JSON (the way'
-                . ' PHP understands JSON, that is).');
+                . ' PHP understands JSON, that is)');
         }
     }
 

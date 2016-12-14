@@ -95,11 +95,11 @@ class Fetcher {
     private static function check_curl_http_code($ch, $url) {
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code === 404) {
-            throw new NotFoundException('Could not load "' . $url . '", got '
-                . 'an HTTP 404 code.');
+            throw new NotFoundException('could not load "' . $url . '", got '
+                . 'an HTTP 404 code');
         } else if ($http_code === 0) {
-            throw new NotFoundException('Could not load "' . $url . '", got '
-                . 'no response. Is the URL valid?');
+            throw new NotFoundException('could not load "' . $url . '", got '
+                . 'no response (is the URL valid?)');
         }
     }
 
@@ -114,8 +114,8 @@ class Fetcher {
         $data = array();
         for ($i = 0; $i < count($paths); $i++) {
             if (!is_file($paths[$i]) || !is_readable($paths[$i])) {
-                throw new NotFoundException('Could not load "' . $paths[$i]
-                    . '", file does not exist or is not readable.');
+                throw new NotFoundException('could not load "' . $paths[$i]
+                    . '", file does not exist or is not readable');
             }
             $data[] = file_get_contents($paths[$i]);
         }
