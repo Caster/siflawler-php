@@ -1,17 +1,21 @@
 # siflawler-php
-A simple, flexible crawler, written in PHP. Do you want data from a website?
-This project may be just the tool you need. Do you want to crawl multiple pages,
-retrieving data from all those pages? We all love pagination, right? This tool
-can handle it. Do you hate writing code that traverses DOM trees in PHP, or do
-you not know how to do that? No problem. You only need to write a JSON
-configuration file (or pass that information as a `\stdClass` object or
-associative array) to let siflawler know what to look for and where and you are
-good to go.
+A simple, flexible crawler, written in PHP.
+
+This little project is [easily installable](#usage) and enables you to
+
+  - easily retrieve data from an HTML or XML file, both local and remote;
+  - crawl multiple pages efficiently (can handle pagination);
+  - not worry about DOM traversal at all.
+
+Interesting features on a page can be found through XPath queries. On top of
+that, siflawler supports basic CSS selectors with an [extension](#querying)
+enabling the retrieval of attributes. This way, querying a page is easy even if
+you do not know XPath.
 
 
   1.  [Dependencies](#dependencies)
   1.  [Usage](#usage)
-  1.  [But what do I configure?](#but-what-do-i-configure)
+  1.  [Configuration](#configuration)
       1.  [Mandatory options](#mandatory-options)
       1.  [Optional options](#optional-options)
       1.  [Querying](#querying)
@@ -21,7 +25,7 @@ good to go.
 
 ## Dependencies
 To be able to run siflawler, you will need to have the [PHP cURL
-module](http://php.net/manual/en/book.curl.php) installed. This is what
+extension](http://php.net/manual/en/book.curl.php) installed. This is what
 siflawler uses to download pages from the website(s) you want to crawl. This
 does enable siflawler to download pages in parallel, amongst others. Please open
 an issue if you have a problem with this and would like to see if bare PHP
@@ -43,7 +47,7 @@ You can install siflawler using [Composer](https://getcomposer.org/). Either run
 You are now set up to start crawling.
 
 ```php
-$config = /* path to JSON file, object, or associative array */;
+$config = // JSON string, path to JSON file, object, or associative array
 $crawler = new \siflawler\Crawler($config);
 $data = $crawler->crawl();
 ```
@@ -57,8 +61,9 @@ $ php -f your-file.php
 ```
 
 
-## But what do I configure?
-Configuration? JSON? What? How? Like this.
+## Configuration
+These are the options you can pass the `\siflawler\Crawler` when constructing
+it.
 
 
 ### Mandatory options
