@@ -5,9 +5,11 @@ namespace siflawler\Config;
 use \siflawler\Exceptions\ConfigException;
 
 /**
- * Class that can read a configuration file in JSON format and functions as a
+ * Class that can read configuration in various formats and functions as a
  * dictionary with configuration options. It also provides default values for
- * some configuration options.
+ * some configuration options. The defaults are read from a JSON file. Supported
+ * formats are reading a JSON file, reading a JSON string, options in a
+ * \stdClass object and finally options in an associative array.
  */
 class Options {
 
