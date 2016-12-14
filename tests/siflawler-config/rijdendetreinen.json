@@ -10,5 +10,5 @@
         "from": "descendant::time[1]/@datetime",
         "to": "descendant::time[2]/@datetime"
     },
-    "next": "(//a[@class=\"smallbutton active\"])[1]/following-sibling::a[count(following-sibling::a) > 0]/@href"
+    "next": "xpath:(//a[@class=\"smallbutton active\"])[1]/following-sibling::a[count(following-sibling::a) > 0]/@href"
 }

@@ -18,13 +18,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     public static function setUpBeforeClass() {
         TestCache::init();
 
-        self::$next_toc = '(//div[@id="readme"]/'
-            . 'descendant::ol[@class="task-list"])[1]/descendant::li/a/@href';
-        self::$next_menu = '//ul[@class="header-nav left"]/li/a/@href';
+        self::$next_toc = 'xpath:(//div[@id="readme"]/'
+            . 'descendant::ol)[1]/descendant::li/a/@href';
+        self::$next_menu = '//nav[@class="site-header-nav site-header-nav-main"]/a/@href';
         self::$options = new Options(TestCache::$config_object);
         self::$options->set('next', self::$next_toc);
         self::$url = 'https://github.com/Caster/siflawler-php';
         self::$expected_toc = array(
+            self::$url . '#dependencies',
             self::$url . '#usage',
             self::$url . '#but-what-do-i-configure',
             self::$url . '#mandatory-options',
@@ -35,10 +36,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             self::$url . '#license'
         );
         self::$expected_menu = array(
-            'https://github.com/explore',
-            'https://github.com/features',
-            'https://enterprise.github.com/',
-            'https://github.com/blog'
+            'https://github.com/personal',
+            'https://github.com/open-source',
+            'https://github.com/business',
+            'https://github.com/explore'
         );
     }
 

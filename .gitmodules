@@ -1,4 +1,0 @@
-[submodule "phpunit"]
-	path = lib/phpunit
-	url = git@github.com:sebastianbergmann/phpunit.git
-	branch = 4.4

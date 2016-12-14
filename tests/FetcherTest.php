@@ -63,7 +63,7 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
 
         // parse and check repository name from first URL
         list($doc, $xpath) = Parser::load_html($data[0]);
-        $elements = $xpath->query('//a[@class="js-current-repository"]/text()');
+        $elements = $xpath->query('//strong[@itemprop="name"]/a/text()');
         $this->assertEquals(1, $elements->length);
         $repoName = Parser::get_node_value($elements->item(0));
         $this->assertEquals('siflawler-php', $repoName);
@@ -77,7 +77,7 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
 
         // parse and check owner name from third URL
         list($doc, $xpath) = Parser::load_html($data[2]);
-        $elements = $xpath->query('//a[@class="url fn"]/span/text()');
+        $elements = $xpath->query('//a[@class="url fn"]/text()');
         $this->assertEquals(1, $elements->length);
         $repoName = Parser::get_node_value($elements->item(0));
         $this->assertEquals('Caster', $repoName);
@@ -88,10 +88,10 @@ class FetcherTest extends \PHPUnit_Framework_TestCase {
      */
     private function checkSiflawlerPage($data) {
         list($doc, $xpath) = Parser::load_html($data);
-        $elements = $xpath->query('//a[@class="js-current-repository"]/text()');
-        $this->assertEquals($elements->length, 1);
+        $elements = $xpath->query('//strong[@itemprop="name"]/a/text()');
+        $this->assertEquals(1, $elements->length);
         $repoName = Parser::get_node_value($elements->item(0));
-        $this->assertEquals($repoName, 'siflawler-php');
+        $this->assertEquals('siflawler-php', $repoName);
     }
 
 }

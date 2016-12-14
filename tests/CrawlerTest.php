@@ -40,9 +40,11 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase {
 
     protected function runAndVerifyCrawler($crawler) {
         $data = $crawler->crawl();
-        $this->assertEquals(count($data), 1);
-        $this->assertEquals($data[0]->language, 'PHP');
-        $this->assertEquals($data[0]->percent, '100%');
+        $this->assertEquals(2, count($data));
+        $this->assertEquals('PHP', $data[0]->language);
+        $this->assertStringMatchesFormat('%f%', $data[0]->percent);
+        $this->assertEquals('HTML', $data[1]->language);
+        $this->assertStringMatchesFormat('%f%', $data[1]->percent);
     }
 
 }

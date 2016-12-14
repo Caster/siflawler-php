@@ -38,8 +38,8 @@ class TestCache {
     "start": "https://github.com/Caster/siflawler-php",
     "find": "//ol[@class=\"repository-lang-stats-numbers\"]/li",
     "get": {
-        "language": "a/span[@class=\"lang\"]/text()",
-        "percent": "a/span[@class=\"percent\"]/text()"
+        "language": "//a/span[@class=\"lang\"]/text()",
+        "percent": "//a/span[@class=\"percent\"]/text()"
     },
     "next": null
 }
@@ -52,8 +52,8 @@ JSON;
         self::$config_object->start = 'https://github.com/Caster/siflawler-php';
         self::$config_object->find = '//ol[@class="repository-lang-stats-numbers"]/li';
         self::$config_object->get = new \stdClass();
-        self::$config_object->get->language = 'a/span[@class="lang"]/text()';
-        self::$config_object->get->percent = 'a/span[@class="percent"]/text()';
+        self::$config_object->get->language = '//a/span[@class="lang"]/text()';
+        self::$config_object->get->percent = '//a/span[@class="percent"]/text()';
         self::$config_object->next = null;
 
         // construct the configuration object as an array... slightly less tedious
@@ -63,8 +63,8 @@ JSON;
             'start' => 'https://github.com/Caster/siflawler-php',
             'find' => 'ol.repository-lang-stats-numbers > li',
             'get' => array(
-                'language' => 'a/span[@class="lang"]/text()',
-                'percent' => 'a/span[@class="percent"]/text()'
+                'language' => 'a > span.lang$text()',
+                'percent' => 'a > span.percent$text()'
             ),
             'next' => null
         );

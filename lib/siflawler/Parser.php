@@ -56,7 +56,7 @@ class Parser {
             foreach ($data_nodes as $data_node) {
                 $data_point = new \stdClass();
                 foreach ($data_keys as $key => $query) {
-                    $result = @$xpaths[$i]->query(
+                    $result = @$xpaths[$i]->query('.' . // make the XPath query relative to context
                         QueryTranslator::translateQuery($query), $data_node);
                     if ($result === false && $options->get('warnings')) {
                         echo("[W] siflawler: malformed (translated) query for 'get['$key']'!\n");
