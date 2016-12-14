@@ -27,7 +27,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         self::$expected_toc = array(
             self::$url . '#dependencies',
             self::$url . '#usage',
-            self::$url . '#but-what-do-i-configure',
+            self::$url . '#configuration',
             self::$url . '#mandatory-options',
             self::$url . '#optional-options',
             self::$url . '#querying',
