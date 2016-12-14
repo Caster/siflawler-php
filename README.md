@@ -20,33 +20,33 @@ good to go.
   1.  [License](#license)
 
 ## Dependencies
-To be able to run siflawler, you will need to have the [PHP cURL module](http://php.net/manual/en/book.curl.php) installed. This is what siflawler uses to download pages from the website(s) you want to crawl. This does enable siflawler to download pages in parallel, amongst others. Please open an issue if you have a problem with this and would like to see if bare PHP `file_get_contents` support can be added.
-
+To be able to run siflawler, you will need to have the [PHP cURL
+module](http://php.net/manual/en/book.curl.php) installed. This is what
+siflawler uses to download pages from the website(s) you want to crawl. This
+does enable siflawler to download pages in parallel, amongst others. Please open
+an issue if you have a problem with this and would like to see if bare PHP
+`file_get_contents` support can be added.
 
 ## Usage
-There are a couple of steps to go through.
+You can install siflawler using [Composer](https://getcomposer.org/). Either run
+`composer require 'caster/siflawler:~1.2'` or put the following in your
+`composer.json` and run `composer install`.
 
-  1.  Download or clone siflawler.
+```json
+{
+    "require": {
+        "caster/siflawler": "~1.2"
+    }
+}
+```
 
-  1.  Create your own PHP file, based on the test files in the repository. Really,
-      you only need to include the `siflawler.php` class loader, that will be all.
+You are now set up to start crawling.
 
-  1.  Write a JSON configuration file and pass its filename to the `Crawler`
-      constructor as follows:
-
-      ```php
-      $crawler = new \siflawler\Crawler('/path/to/config.json');
-      ```
-
-      Alternatively, you can pass the JSON as a string, you can pass a `\stdClass`
-      object or you can even pass an associative array. Whatever you prefer,
-      siflawler will (try to) understand it.
-
-  1.  Start crawling.
-
-      ```php
-      $data = $crawler->crawl();
-      ```
+```php
+$config = /* path to JSON file, object, or associative array */;
+$crawler = new \siflawler\Crawler($config);
+$data = $crawler->crawl();
+```
 
 You may like to do crawling from the commandline. In that case, just run your file
 as follows. siflawler will give some output letting you know what it is doing in
@@ -110,8 +110,9 @@ The `max_requests` option can be used to limit the number of pages siflawler wil
 request in total. A value of 0 or less means that there is no limit.
 
 The `next` option can be used to find one or more URLs to crawl next. If this is
-`null`, then no next page will be crawled, but you can specify an XPath query to
-find one or more locations to go next.
+`null`, then no next page will be crawled, but you can specify a
+[query](#querying) to find one or more locations to go to next. This is useful
+when you want to crawl data that is split over multiple pages using pagination.
 
 The `timeout` option can be used to specify a timeout in seconds for each request.
 A value of 0 means that there will be no timeout.
@@ -132,7 +133,7 @@ p#some-id$text()
 
 Internally, siflawler will translate CSS selectors to XPath queries. If you want
 to be sure that this cannot go wrong, you should use XPath, but siflawler's CSS
-support is pretty good and can always be improved if you create an issue :)
+support is pretty good and can always be improved if you create an issue 🙂
 
 To distinguish between CSS and XPath, siflawler uses a heuristic. If you want to
 be sure that this does not go wrong, you can specify a query as
@@ -141,35 +142,9 @@ precisely what the query language is you use.
 
 
 ## Running tests
-This project includes [phpunit](https://phpunit.de/) as a
-[submodule](http://git-scm.com/book/en/v2/Git-Tools-Submodules). This means that
-if you want to run tests, you will need to initialise and update that submodule
-as follows:
-
-```
-$ cd /path/to/siflawler-php/
-$ git submodule update --init --remote
-Submodule 'phpunit' (git@github.com:sebastianbergmann/phpunit.git) registered for path 'lib/phpunit'
-Submodule path 'lib/phpunit': checked out 'e90575c2bb86290d57a262862dab1da125431576'
-```
-
-This should check out the latest commit in the stable branch, currently `4.4`.
-
-To set up PHPUnit, you will need to execute a few more commands only once. This
-will also be output by PHPUnit if you run it without doing these steps.
-
-```
-$ cd /path/to/siflawler-php/lib/phpunit/
-$ wget http://getcomposer.org/composer.phar
-$ php composer.phar install
-```
-
-If you then want to run tests, you can do so as follows:
-
-```
-$ cd /path/to/siflawler-php/tests/
-$ ../lib/phpunit/phpunit
-```
+This project uses [phpunit](https://phpunit.de/) for automated unit testing. You
+can easily run the tests by executing `composer test`. For that to work, you do
+need to install the dev version of siflawler.
 
 
 ## Contributing
