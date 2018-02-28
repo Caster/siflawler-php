@@ -33,13 +33,13 @@ an issue if you have a problem with this and would like to see if bare PHP
 
 ## Usage
 You can install siflawler using [Composer](https://getcomposer.org/). Either run
-`composer require 'caster/siflawler:~1.2'` or put the following in your
+`composer require 'caster/siflawler:~1.2.1'` or put the following in your
 `composer.json` and run `composer install`.
 
 ```json
 {
     "require": {
-        "caster/siflawler": "~1.2"
+        "caster/siflawler": "~1.2.1"
     }
 }
 ```
